@@ -3,6 +3,9 @@ class Turtle:
   def __init__(self, outfilename, movement_dict, angle, stride, size) -> None:
     self.outfilename = outfilename
     self.movement_dict = movement_dict
+    self.movement_dict['O'] = 'O'
+    self.movement_dict['('] = '('
+    self.movement_dict[')'] = ')'
     self.angle = angle
     self.stride = stride
     self.hsize = size
@@ -27,7 +30,11 @@ class Turtle:
       self.turtle.left(self.angle)
     elif movement == 'R':
       self.turtle.right(self.angle)
-    
+    elif movement == '(':
+      self.turtle.circle(self.stride, -self.angle)
+    elif movement == ')':
+      self.turtle.circle(self.stride, self.angle)
+
   def write_output(self):
     self.turtle.save_as(self.outfilename)
 

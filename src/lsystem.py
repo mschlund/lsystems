@@ -23,7 +23,7 @@ class LSystem:
     self.start_symbol = start_symbol
     self.rules, self.variables, self.constants = self._parse_spec(spec)
 
-  def run_from(self, initial_string: str, number_of_iterations: int):
+  def run_from(self, initial_string: str, number_of_iterations: int) -> str:
     current_string = initial_string
     i=0
     while i < number_of_iterations:
@@ -34,11 +34,11 @@ class LSystem:
       i += 1
     return current_string
 
-  def run(self, number_of_iterations: int):
+  def run(self, number_of_iterations: int) -> str:
     return self.run_from(initial_string=self.start_symbol, number_of_iterations=number_of_iterations)
 
-  def get_variables(self):
+  def get_variables(self) -> set:
     return self.variables
 
-  def get_constants(self):
+  def get_constants(self) -> set:
     return self.constants
