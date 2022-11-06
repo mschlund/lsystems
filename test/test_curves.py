@@ -6,4 +6,4 @@ def test_postprocess():
   assert(raw_str == 'F+G+F-G+F+G-F-G')
 
   curved_str = '(+)+(-)'
-  assert(d.run_curved(3) == curved_str)
+  assert(d.run_curved_str(3) == curved_str)
