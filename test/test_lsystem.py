@@ -8,3 +8,7 @@ def test_sierpinski():
   assert(L.run(1) == 'B-A-B')
   assert(L.run(2) == 'A+B+A-B-A-B-A+B+A')
 
+def test_get():
+  L = lsystem.LSystem(sierpinski_spec, start_symbol='A')
+  assert(L.get_variables() == set(['A', 'B']))
+  assert(L.get_constants() == set(['+', '-']))
