@@ -12,3 +12,7 @@ def test_get():
   L = lsystem.LSystem(sierpinski_spec, start_symbol='A')
   assert(L.get_variables() == set(['A', 'B']))
   assert(L.get_constants() == set(['+', '-']))
+
+def test_run_from_different_start():
+  L = lsystem.LSystem(sierpinski_spec, start_symbol='A')
+  assert(L.run_from('AA', 1) == 'B-A-BB-A-B')

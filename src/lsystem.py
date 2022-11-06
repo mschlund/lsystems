@@ -23,8 +23,8 @@ class LSystem:
     self.start_symbol = start_symbol
     self.rules, self.variables, self.constants = self._parse_spec(spec)
 
-  def run(self, number_of_iterations: int):
-    current_string = self.start_symbol
+  def run_from(self, initial_string: str, number_of_iterations: int):
+    current_string = initial_string
     i=0
     while i < number_of_iterations:
       # https://stackoverflow.com/questions/6116978/how-to-replace-multiple-substrings-of-a-string
@@ -32,7 +32,10 @@ class LSystem:
       pattern = re.compile('|'.join([re.escape(x) for x in self.rules.keys()]))
       current_string = pattern.sub(lambda x: self.rules[x.group(0)], current_string)
       i += 1
-    return current_string  
+    return current_string
+
+  def run(self, number_of_iterations: int):
+    return self.run_from(initial_string=self.start_symbol, number_of_iterations=number_of_iterations)
 
   def get_variables(self):
     return self.variables
