@@ -19,8 +19,12 @@ class Curve(ABC):
     return self.lsys.get_constants()
 
   def get_svg(self, iters: int) -> str:
-    self.turtle.draw(self.startpoint+self.lsys.run(iters))
+    self.turtle.draw(self.startpoint+self.run_str(iters))
     return self.turtle.to_svg()
+
+  def write_output(self, iters: int):
+    self.turtle.draw(self.startpoint+self.run_str(iters))
+    return self.turtle.write_output()
 
   def run_from(self, init_str: str, iters: int) -> str:
     self.turtle.draw(self.run_str_from(init_str, iters))
@@ -59,6 +63,29 @@ class Dragon(Curve):
   def run_curved(self, iters):
     self.turtle.draw(self.run_curved_str(iters))
     return self.turtle.to_svg()
+
+class Hendragon(Curve):
+
+  def __init__(self):
+    rules = \
+      "M -> lFrFRFMFLFlFr;" + \
+      "l -> lFRFrFLFlFlFr;" + \
+      "r -> rFLFlFRFrFrFl;" + \
+      "L -> rFlFLFRFLFlFr;" + \
+      "R -> lFrFRFLFRFrFl;"
+    self.lsys = ls.LSystem(rules, start_symbol='M')
+    self.turtle = mt.Turtle(
+      'hendragon_curve.svg',
+      {'l': 'L', 'r': 'R', 'M': '', 'F': 'F', '+': 'L', '-': 'R'},
+      60,
+      40,
+      2000
+    )
+    self.startpoint = '---'+'O'*8+'+++'+'--'+'O'*5+'+++'
+
+  def run_str(self, iters: int) -> str:
+    curve_str = self.lsys.run(iters)
+    return post_process(curve_str, {'L': 'll', 'R': 'rr'})
 
 def post_process(curve_string: str, replacements: dict) -> str:
   pattern = re.compile('|'.join([re.escape(x) for x in replacements.keys()]))
