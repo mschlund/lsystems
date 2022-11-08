@@ -2,8 +2,10 @@
 Playing around with lsystems and drawing the resulting string with the help of an svg-turtle as a curve.
 
 ## Build
-prerequisites:
+Prerequisites:
 - install anaconda (see https://docs.anaconda.com/anaconda/install/silent-mode/)
+
+Then follow these steps:
 
 1. setup environment
 
@@ -14,8 +16,7 @@ prerequisites:
 2. install this package in editable mode
 ``` python -m pip install -e . ```
 
-3. run the draw-curves notebook
-Either do
+3. run the draw-curves notebook: Either do
 
 ``` $ cd notebooks ```
 
