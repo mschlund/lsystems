@@ -8,13 +8,16 @@ prerequisites:
 1. setup environment
 
 ```$ conda env create -f env.yml```
+
 ```$ conda activate lsystems```
 
 2. install this package in editable mode
 ``` python -m pip install -e . ```
 
 3. run the draw-curves notebook
-either do
+Either do
+
 ``` $ cd notebooks ```
+
 ``` $ jupyter-notebook draw_curves.ipynb ```
 or open the notebook in your favorite ide.
