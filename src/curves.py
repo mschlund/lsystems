@@ -45,12 +45,15 @@ class Curve(ABC):
     self.turtle.draw(self.startpoint+self.run_curved_str(iters))
     return self.turtle.to_svg()
 
+  def write_output(self):
+    self.turtle.write_output()
+
 
 class Sierpinski(Curve):
 
-  def __init__(self, size=1500, start = ''):
+  def __init__(self, size=1500, start = '', width=3):
     self.lsys = ls.LSystem('A -> B - A - B; B -> A + B + A;', start_symbol='A') # sierpinski-curve
-    self.turtle = mt.Turtle('sierpinski_curve.svg', {'A': 'F', 'B': 'F', 'X': 'F'}, 60, 50, size)
+    self.turtle = mt.Turtle('sierpinski_curve.svg', {'A': 'F', 'B': 'F', 'X': 'F'}, 60, 50, size, width=width)
     self.startpoint = start
 
   def run_curved_str(self, iters) -> str:
@@ -61,9 +64,9 @@ class Sierpinski(Curve):
 
 class Dragon(Curve):
 
-  def __init__(self, size=1000, start=''):
+  def __init__(self, size=1000, start='', width=3):
     self.lsys = ls.LSystem('F -> F + G; G -> F - G;', start_symbol='F') # dragon-curve
-    self.turtle = mt.Turtle('dragon_curve.svg', {'F': 'F', 'G': 'F', 'X': 'F'}, 90, 50, size)
+    self.turtle = mt.Turtle('dragon_curve.svg', {'F': 'F', 'G': 'F', 'X': 'F'}, 90, 50, size, width=width)
     self.startpoint = start
 
   def run_curved_str(self, iters) -> str:
@@ -75,9 +78,9 @@ class Dragon(Curve):
 
 class Hilbert(Curve):
 
-  def __init__(self, size=1000, start = ''):
+  def __init__(self, size=1000, start = '', width=3):
     self.lsys = ls.LSystem('A -> +BF-AFA-FB+; B -> -AF+BFB+FA-;', start_symbol='A') # hilbert-curve
-    self.turtle = mt.Turtle('hilbert_curve.svg', {'A': '', 'B': ''}, 90, 10, size)
+    self.turtle = mt.Turtle('hilbert_curve.svg', {'A': '', 'B': ''}, 90, 10, size, width=width)
     self.startpoint = start
 
   def run_curved_str(self, iters) -> str:
@@ -91,9 +94,9 @@ class Hilbert(Curve):
 # Peano-curve with middle removed
 class FractalPeano(Curve):
 
-  def __init__(self, size=1000, start = ''):
+  def __init__(self, size=1000, start = '', width=3):
     self.lsys = ls.LSystem('A -> AFBFA-F-BFCFB+F+AFBFA; B -> BFAFB+F+AFDFA-F-BFAFB; C -> CODOC-O-DOCOD+O+CODOC; D -> DOCOD+O+COCOC-O-DOCOD;', start_symbol='A') # peano-curve
-    self.turtle = mt.Turtle('fractal_peano_curve.svg', {'A': '', 'B': '', 'C': '', 'D': ''}, 90, 10, size)
+    self.turtle = mt.Turtle('fractal_peano_curve.svg', {'A': '', 'B': '', 'C': '', 'D': ''}, 90, 10, size, width=width)
     self.startpoint = start
 
   def run_curved_str(self, iters) -> str:
