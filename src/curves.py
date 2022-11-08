@@ -1,5 +1,5 @@
 import re
-from abc import ABC
+from abc import ABC, abstractmethod
 import numpy as np
 
 import lsystem as ls
@@ -18,7 +18,7 @@ class Curve(ABC):
   def get_constants(self) -> set:
     return self.lsys.get_constants()
 
-  def get_svg(self, iters: int) -> str:
+  def run_svg_str(self, iters: int) -> str:
     self.turtle.draw(self.startpoint+self.lsys.run(iters))
     return self.turtle.to_svg()
 
@@ -36,6 +36,16 @@ class Curve(ABC):
   def run_str_from(self, init_str: str, iters: int) -> str:
     return self.lsys.run_from(init_str, iters)
 
+  @abstractmethod
+  def run_curved_str(self, iters: int) -> str:
+    return ''
+
+  # returns an svg string
+  def run_curved(self, iters) -> str:
+    self.turtle.draw(self.run_curved_str(iters))
+    return self.turtle.to_svg()    
+
+
 class Sierpinski(Curve):
 
   def __init__(self):
@@ -48,19 +58,50 @@ class Dragon(Curve):
 
   def __init__(self):
     self.lsys = ls.LSystem('F -> F + G; G -> F - G;', start_symbol='F') # dragon-curve
-    self.turtle = mt.Turtle('dragon_curve.svg', {'F': 'F', 'G': 'F', '+': 'L', '-': 'R', 'O': 'O'}, 90, 50, 1000)
+    self.turtle = mt.Turtle('dragon_curve.svg', {'F': 'F', 'G': 'F', '+': 'L', '-': 'R', 'X': 'F'}, 90, 50, 1000)
     self.startpoint = ''
 
   def run_curved_str(self, iters) -> str:
     raw_str = self.lsys.run(iters)    
-    f_string = post_process(raw_str, {'G' : 'F'})
-    return post_process(f_string, {'F+F' : '(', 'F-F' : ')'})
+    f_string = _post_process(raw_str, {'G' : 'F'})
+    split_string = _post_process(f_string, {'F' : 'XX'})
+    return _post_process(split_string, {'X+X' : ')', 'X-X': '('})
 
-  def run_curved(self, iters):
-    self.turtle.draw(self.run_curved_str(iters))
-    return self.turtle.to_svg()
 
-def post_process(curve_string: str, replacements: dict) -> str:
+class Hilbert(Curve):
+
+  def __init__(self):
+    self.lsys = ls.LSystem('A -> +BF-AFA-FB+; B -> -AF+BFB+FA-;', start_symbol='A') # hilbert-curve
+    self.turtle = mt.Turtle('hilbert_curve.svg', {'A': '', 'B': ''}, 90, 10, 1000)
+    self.startpoint = ''
+
+  def run_curved_str(self, iters) -> str:
+    raw_str = self.lsys.run(iters)
+    f_string = _post_process(raw_str, {'A' : '', 'B': '', '+-': '', '-+':''})
+    split_string = _post_process(f_string, {'F' : 'XX'})
+    curved_string = _post_process(split_string, {'X+X' : ')', 'X-X': '('})
+    return _post_process(curved_string, {'X' : 'F'})
+
+
+# Peano-curve with middle removed
+class FractalPeano(Curve):
+
+  def __init__(self):
+    self.lsys = ls.LSystem('A -> AFBFA-F-BFCFB+F+AFBFA; B -> BFAFB+F+AFDFA-F-BFAFB; C -> CODOC-O-DOCOD+O+CODOC; D -> DOCOD+O+COCOC-O-DOCOD;', start_symbol='A') # peano-curve
+    self.turtle = mt.Turtle('fractal_peano_curve.svg', {'A': '', 'B': '', 'C': '', 'D': ''}, 90, 10, 1000)
+    self.startpoint = ''
+
+  def run_curved_str(self, iters) -> str:
+    raw_str = self.lsys.run(iters)
+    f_string = _post_process(raw_str, {'A' : '', 'B': '', 'C': '', 'D': '', '+-': '', '-+':''})
+    trimmed_string = _post_process(f_string, {'FO': 'OO', 'OF': 'OO'})
+    split_string = _post_process(trimmed_string, {'F' : 'XX', 'O': 'YY'})
+    curved_string = _post_process(split_string, {'X+X' : ')', 'X-X': '('})
+    return _post_process(curved_string, {'X' : 'F', 'Y': 'O'})
+
+
+
+def _post_process(curve_string: str, replacements: dict) -> str:
   pattern = re.compile('|'.join([re.escape(x) for x in replacements.keys()]))
   return pattern.sub(lambda x: replacements[x.group(0)], curve_string)
 
