@@ -115,7 +115,7 @@ class FractalPeano(Curve):
 
 class Hendragon(Curve):
 
-  def __init__(self):
+  def __init__(self, size=1000, start = '', width=3):
     rules = \
       "M -> lFrFRFMFLFlFr;" + \
       "l -> lFRFrFLFlFlFr;" + \
@@ -127,14 +127,18 @@ class Hendragon(Curve):
       'hendragon_curve.svg',
       {'l': 'L', 'r': 'R', 'M': '', 'F': 'F', '+': 'L', '-': 'R'},
       60,
-      40,
-      2000
+      10,
+      size,
+      width
     )
-    self.startpoint = '---'+'O'*8+'+++'+'--'+'O'*5+'+++'
+    self.startpoint = start
 
   def run_str(self, iters: int) -> str:
-    curve_str = self.lsys.run(iters)
+    curve_str = self.startpoint+self.lsys.run(iters)
     return _post_process(curve_str, {'L': 'll', 'R': 'rr'})
+  
+  def run_curved_str(self, iters) -> str:
+    return self.run_str(iters)
 
 def _post_process(curve_string: str, replacements: dict) -> str:
   pattern = re.compile('|'.join([re.escape(x) for x in replacements.keys()]))
