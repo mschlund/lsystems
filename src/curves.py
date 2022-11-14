@@ -22,6 +22,10 @@ class Curve(ABC):
     self.turtle.draw(self.startpoint+self.lsys.run(iters))
     return self.turtle.to_svg()
 
+  def write_output(self, iters: int):
+    self.turtle.draw(self.startpoint+self.run_str(iters))
+    return self.turtle.write_output()
+
   def run_from(self, init_str: str, iters: int) -> str:
     self.turtle.draw(self.startpoint+self.run_str_from(init_str, iters))
     return self.turtle.to_svg()
@@ -108,6 +112,33 @@ class FractalPeano(Curve):
     return _post_process(curved_string, {'X' : 'F', 'Y': 'O'})
 
 
+
+class Hendragon(Curve):
+
+  def __init__(self, size=1000, start = '', width=3):
+    rules = \
+      "M -> lFrFRFMFLFlFr;" + \
+      "l -> lFRFrFLFlFlFr;" + \
+      "r -> rFLFlFRFrFrFl;" + \
+      "L -> rFlFLFRFLFlFr;" + \
+      "R -> lFrFRFLFRFrFl;"
+    self.lsys = ls.LSystem(rules, start_symbol='M')
+    self.turtle = mt.Turtle(
+      'hendragon_curve.svg',
+      {'l': 'L', 'r': 'R', 'M': '', 'F': 'F', '+': 'L', '-': 'R'},
+      60,
+      10,
+      size,
+      width
+    )
+    self.startpoint = start
+
+  def run_str(self, iters: int) -> str:
+    curve_str = self.startpoint+self.lsys.run(iters)
+    return _post_process(curve_str, {'L': 'll', 'R': 'rr'})
+  
+  def run_curved_str(self, iters) -> str:
+    return self.run_str(iters)
 
 def _post_process(curve_string: str, replacements: dict) -> str:
   pattern = re.compile('|'.join([re.escape(x) for x in replacements.keys()]))
