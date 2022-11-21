@@ -18,35 +18,31 @@ class Curve(ABC):
   def get_constants(self) -> set:
     return self.lsys.get_constants()
 
-  def run_svg_str(self, iters: int) -> str:
-    self.turtle.draw(self.startpoint+self.lsys.run(iters))
+  def run_svg(self, iters: int) -> str:
+    self.turtle.draw(self.run_str(iters))
     return self.turtle.to_svg()
 
   def write_output(self, iters: int):
     self.turtle.draw(self.startpoint+self.run_str(iters))
     return self.turtle.write_output()
 
-  def run_from(self, init_str: str, iters: int) -> str:
+  def run_svg_from(self, init_str: str, iters: int) -> str:
     self.turtle.draw(self.startpoint+self.run_str_from(init_str, iters))
     return self.turtle.to_svg()
 
-  def run(self, iters: int) -> str:
-    self.turtle.draw(self.startpoint+self.run_str(iters))
-    return self.turtle.to_svg()
-
   def run_str(self, iters: int) -> str:
-    return self.startpoint+self.lsys.run(iters)
+    return self.startpoint + self.lsys.run(iters)
 
   def run_str_from(self, init_str: str, iters: int) -> str:
-    return self.startpoint+self.lsys.run_from(init_str, iters)
+    return self.startpoint + self.lsys.run_from(init_str, iters)
 
-  @abstractmethod
+  @abstractmethod # already includes the start-string
   def run_curved_str(self, iters: int) -> str:
     return ''
 
   # returns an svg string
-  def run_curved(self, iters) -> str:
-    self.turtle.draw(self.startpoint+self.run_curved_str(iters))
+  def run_curved_svg(self, iters) -> str:
+    self.turtle.draw(self.run_curved_str(iters))
     return self.turtle.to_svg()
 
   def write_output(self):
@@ -109,7 +105,7 @@ class FractalPeano(Curve):
     trimmed_string = _post_process(f_string, {'FO': 'OO', 'OF': 'OO'})
     split_string = _post_process(trimmed_string, {'F' : 'XX', 'O': 'YY'})
     curved_string = _post_process(split_string, {'X+X' : ')', 'X-X': '('})
-    return _post_process(curved_string, {'X' : 'F', 'Y': 'O'})
+    return self.startpoint + _post_process(curved_string, {'X' : 'F', 'Y': 'O'})
 
 
 
