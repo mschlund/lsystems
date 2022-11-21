@@ -1,7 +1,7 @@
 import unittest
-import my_turtle as mt
+from .svg import PathSegment, Line, Rotation
 
-previousSegment = mt.PathSegment(
+previousSegment = PathSegment(
     startPosition=(0, 0),
     startDirection=0,
     endPosition=(10, 10),
@@ -12,7 +12,7 @@ previousSegment = mt.PathSegment(
 
 class TestMyTurtle(unittest.TestCase):
     def test_line(self):
-        line = mt.Line(length=20)
+        line = Line(length=20)
         segment = line.generate(previousSegment)
 
         self.assertEqual(segment.startPosition, previousSegment.endPosition)
@@ -23,7 +23,7 @@ class TestMyTurtle(unittest.TestCase):
         self.assertEqual(segment.d, "L 10.0000 30.0000")
 
     def test_line_without_draw(self):
-        line = mt.Line(length=20, draw=False)
+        line = Line(length=20, draw=False)
         segment = line.generate(previousSegment)
 
         self.assertEqual(segment.startPosition, previousSegment.endPosition)
@@ -34,7 +34,7 @@ class TestMyTurtle(unittest.TestCase):
         self.assertEqual(segment.d, "M 10.0000 30.0000")
 
     def test_rotation(self):
-        line = mt.Rotation(angle=122)
+        line = Rotation(angle=122)
         segment = line.generate(previousSegment)
 
         self.assertEqual(segment.startPosition, previousSegment.endPosition)
