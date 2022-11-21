@@ -141,6 +141,49 @@ def _post_process(curve_string: str, replacements: dict) -> str:
   return pattern.sub(lambda x: replacements[x.group(0)], curve_string)
 
 
+class Hendragon2(Curve):
+
+  def __init__(self, size=1000, start = '', width=3):
+    rules = \
+      "M -> MRrLllr;" + \
+      "r -> MrRMLlr;" + \
+      "R -> MrrRlLr;" + \
+      "l -> rRLlllr;" + \
+      "Ll-> rRLlllMlRrLllr;"+ \
+      "Lr-> rRLlllMrLlRrrl;"+ \
+      "LR-> rRLlllMMLRrrrl;"
+
+    self.lsys = ls.LSystem(rules, start_symbol='rrrrRLR')
+    self.turtle = mt.Turtle(
+      'hendragon2_curve.svg',
+      {'F': 'F', '+': 'L', '-': 'R'},
+      60,
+      5,
+      size,
+      width
+    )
+    self.startpoint = start
+
+  def run_str(self, iters: int) -> str:
+    curve_str = self.lsys.run(iters)
+    post_str = _post_process(curve_str, {
+      'M': 'FF',
+      'r': 'F-F',
+      'l': 'F+F',
+      'R': 'F--F',
+      'L': 'F++F'
+    })
+    return self.startpoint+post_str[1:-1]+'FF'
+  
+  def run_curved_str(self, iters) -> str:
+    return self.run_str(iters)
+
+def _post_process(curve_string: str, replacements: dict) -> str:
+  pattern = re.compile('|'.join([re.escape(x) for x in replacements.keys()]))
+  return pattern.sub(lambda x: replacements[x.group(0)], curve_string)
+
+
+
 # returns an svg-string
 def draw_random_curve(seed: int, curve: Curve, iters: int) -> str:
   vars = curve.get_variables()
