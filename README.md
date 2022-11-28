@@ -28,4 +28,4 @@ or open the notebook in your favorite ide.
 ## Tests
 Tests can be executed via:
 
-```$ cd test; python -m unittest discover```
+```$ python -m unittest discover -s ./test -p test*.py```
