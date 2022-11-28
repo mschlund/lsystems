@@ -23,4 +23,4 @@ jobs:
         conda env create -f env.yml
     - name: Test
       run: |
-        python -m unittest
+        cd test; python -m unittest
