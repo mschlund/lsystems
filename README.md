@@ -1,4 +1,4 @@
-![conda build](https://github.com/mschlund/lsystems/actions/workflows/python-package-conda.yml/badge.svg)
+ ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![conda build](https://github.com/mschlund/lsystems/actions/workflows/python-package-conda.yml/badge.svg)
 
 # lsystems
 Playing around with lsystems and drawing the resulting string with the help of an svg-turtle as a curve.
