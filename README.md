@@ -1,3 +1,5 @@
+![conda build](https://github.com/mschlund/lsystems/actions/workflows/python-package-conda.yml/badge.svg)
+
 # lsystems
 Playing around with lsystems and drawing the resulting string with the help of an svg-turtle as a curve.
 
