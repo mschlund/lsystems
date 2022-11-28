@@ -22,3 +22,8 @@ Then follow these steps:
 
 ``` $ jupyter-notebook draw_curves.ipynb ```
 or open the notebook in your favorite ide.
+
+## Tests
+Tests can be executed via:
+
+```$ cd test; python -m unittest discover```
