@@ -67,8 +67,7 @@ class Dragon(Curve):
 
     def __init__(self, size=1000, width=3):
         self.filename = 'dragon_curve.svg'
-        self.lsys = LSystem('F -> F + G; G -> F - G;',
-                               start_symbol='F')  # dragon-curve
+        self.lsys = LSystem('F -> F + G; G -> F - G;', start_symbol='F')  # dragon-curve
         self.postProcessMap = {'F': 'F', 'G': 'F', 'X': 'F'}
         self.turtle = SimpleTurtle(90, 50, size, width=width)
 
@@ -83,15 +82,13 @@ class Hilbert(Curve):
 
     def __init__(self, size=1000, width=3):
         self.filename = 'hilbert_curve.svg'
-        self.lsys = LSystem(
-            'A -> +BF-AFA-FB+; B -> -AF+BFB+FA-;', start_symbol='A')  # hilbert-curve
+        self.lsys = LSystem('A -> +BF-AFA-FB+; B -> -AF+BFB+FA-;', start_symbol='A')  # hilbert-curve
         self.postProcessMap = {'A': '', 'B': ''}
         self.turtle = SimpleTurtle(90, 10, size, width=width)
 
     def run_curved_str(self, iters) -> str:
         raw_str = self.run_str(iters)
-        f_string = _post_process(
-            raw_str, {'A': '', 'B': '', '+-': '', '-+': ''})
+        f_string = _post_process(raw_str, {'A': '', 'B': '', '+-': '', '-+': ''})
         split_string = _post_process(f_string, {'F': 'XX'})
         curved_string = _post_process(split_string, {'X+X': ')', 'X-X': '('})
         return _post_process(curved_string, {'X': 'F'})
@@ -103,7 +100,8 @@ class FractalPeano(Curve):
     def __init__(self, size=1000, width=3):
         self.filename = 'fractal_peano_curve.svg'
         self.lsys = LSystem(
-            'A -> AFBFA-F-BFCFB+F+AFBFA; B -> BFAFB+F+AFDFA-F-BFAFB; C -> CODOC-O-DOCOD+O+CODOC; D -> DOCOD+O+COCOC-O-DOCOD;', start_symbol='A')  # peano-curve
+            'A -> AFBFA-F-BFCFB+F+AFBFA; B -> BFAFB+F+AFDFA-F-BFAFB; C -> CODOC-O-DOCOD+O+CODOC; D -> DOCOD+O+COCOC-O-DOCOD;',
+            start_symbol='A')  # peano-curve
         self.postProcessMap = {'A': '', 'B': '', 'C': '', 'D': ''}
         self.turtle = SimpleTurtle(90, 10, size, width=width)
 
@@ -128,8 +126,7 @@ class Hendragon(Curve):
             "L -> rFlFLFRFLFlFr;" + \
             "R -> lFrFRFLFRFrFl;"
         self.lsys = LSystem(rules, start_symbol='M')
-        self.postProcessMap = {'l': 'L', 'r': 'R',
-                               'M': '', 'F': 'F', '+': 'L', '-': 'R'}
+        self.postProcessMap = {'l': 'L', 'r': 'R', 'M': '', 'F': 'F', '+': 'L', '-': 'R'}
         self.turtle = SimpleTurtle(
             60,
             10,

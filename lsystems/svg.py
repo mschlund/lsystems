@@ -12,22 +12,22 @@ class PathSegment:
     """
 
     def __init__(self,
-                 startPosition: tuple[float, float],
-                 startDirection: float,
-                 endPosition: float,
-                 endDirection: float,
+                 start_position: tuple[float, float],
+                 start_direction: float,
+                 end_position: float,
+                 end_direction: float,
                  d: str
                  ):
-        self.startPosition = startPosition
-        self.startDirection = startDirection
-        self.endPosition = endPosition
-        self.endDirection = endDirection
+        self.start_position = start_position
+        self.start_direction = start_direction
+        self.end_position = end_position
+        self.end_direction = end_direction
         self.d = d
 
 
 class Movement(ABC):
     @abstractmethod
-    def generate(self, previousSegment: PathSegment) -> PathSegment:
+    def generate(self, previous_segment: PathSegment) -> PathSegment:
         pass
 
 
@@ -36,19 +36,19 @@ class Line(Movement):
         self.length = length
         self.draw = draw
 
-    def generate(self, previousSegment):
-        x, y = previousSegment.endPosition
-        dir = previousSegment.endDirection
+    def generate(self, previous_segment):
+        x, y = previous_segment.end_position
+        dir = previous_segment.end_direction
         rad = radians(dir)
-        xEnd = x + self.length*cos(rad)
-        yEnd = y + self.length*sin(rad)
+        x_end = x + self.length*cos(rad)
+        y_end = y + self.length*sin(rad)
         cmd = "L" if self.draw else "M"
-        d = f"{cmd} {xEnd:0.4f} {yEnd:0.4f}"
+        d = f"{cmd} {x_end:0.4f} {y_end:0.4f}"
         return PathSegment(
-            startPosition=(x, y),
-            startDirection=dir,
-            endPosition=(xEnd, yEnd),
-            endDirection=dir,
+            start_position=(x, y),
+            start_direction=dir,
+            end_position=(x_end, y_end),
+            end_direction=dir,
             d=d
         )
 
@@ -58,14 +58,14 @@ class Rotation(Movement):
         # negative because in svg the y axis goes down, not up
         self.angle = -angle
 
-    def generate(self, previousSegment):
-        pos = previousSegment.endPosition
-        dir = previousSegment.endDirection
+    def generate(self, previous_segment):
+        pos = previous_segment.end_position
+        dir = previous_segment.end_direction
         return PathSegment(
-            startPosition=pos,
-            startDirection=dir,
-            endPosition=pos,
-            endDirection=dir+self.angle,
+            start_position=pos,
+            start_direction=dir,
+            end_position=pos,
+            end_direction=dir+self.angle,
             d=""
         )
 
@@ -80,27 +80,27 @@ class Arc(Movement):
             raise Exception(
                 f"{angle} needs in interval [-360, 360], but not 0")
 
-    def generate(self, previousSegment):
-        x, y = previousSegment.endPosition
-        dir = previousSegment.endDirection
-        radDir = radians(dir)
-        radAngle = atan(tan(radians(self.angle))*self.rx/self.ry) % (2*pi)
+    def generate(self, previous_segment):
+        x, y = previous_segment.end_position
+        dir = previous_segment.end_direction
+        rad_dir = radians(dir)
+        rad_angle = atan(tan(radians(self.angle))*self.rx/self.ry) % (2*pi)
         if abs(self.angle) > 90 and abs(self.angle) < 270:
-            radAngle = (radAngle+pi) % (2*pi)
+            rad_angle = (rad_angle+pi) % (2*pi)
         if self.angle < 0:
-            radAngle = radAngle - 2*pi
-        dx = self.rx*sin(abs(radAngle))
+            rad_angle = rad_angle - 2*pi
+        dx = self.rx*sin(abs(rad_angle))
         # rotation left or right defines where the center of rotation is
-        dy = (self.ry - self.ry*cos(radAngle)) * (1 if self.angle > 0 else -1)
-        xEnd = x + dx * cos(radDir) - dy * sin(radDir)
-        yEnd = y + dx * sin(radDir) + dy * cos(radDir)
-        largeArc = 1 if abs(self.angle) > 180 else 0
+        dy = (self.ry - self.ry*cos(rad_angle)) * (1 if self.angle > 0 else -1)
+        x_end = x + dx * cos(rad_dir) - dy * sin(rad_dir)
+        y_end = y + dx * sin(rad_dir) + dy * cos(rad_dir)
+        large_arc = 1 if abs(self.angle) > 180 else 0
         sweep = 1 if self.angle > 0 else 0
-        d = f"A {self.rx:0.4f} {self.ry:0.4f} {dir} {largeArc} {sweep} {xEnd:0.4f} {yEnd:0.4f}"
+        d = f"A {self.rx:0.4f} {self.ry:0.4f} {dir} {large_arc} {sweep} {x_end:0.4f} {y_end:0.4f}"
         return PathSegment(
-            startPosition=(x, y),
-            startDirection=dir,
-            endPosition=(xEnd, yEnd),
-            endDirection=dir+self.angle,
+            start_position=(x, y),
+            start_direction=dir,
+            end_position=(x_end, y_end),
+            end_direction=dir+self.angle,
             d=d
         )
