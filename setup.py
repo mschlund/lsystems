@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='lsystems',
-    version='0.2',
+    version='0.3',
     author='Maximilian Schlund',
     license='MIT',
     packages=find_packages(['lsystems']),
