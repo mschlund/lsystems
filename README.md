@@ -5,6 +5,21 @@ Playing around with lsystems and drawing the resulting string with the help of a
 
 ## Build
 Prerequisites:
+- install poetry (cf. https://python-poetry.org/docs/)
+
+1. set up environment
+```$ poetry install```
+
+2. run the draw-curves notebook: Either do
+
+``` $ cd notebooks ```
+
+``` $ jupyter-notebook draw_curves.ipynb ```
+or open the notebook in your favorite ide.
+
+
+### Deprecated (conda)
+Prerequisites:
 - install anaconda (see https://docs.anaconda.com/anaconda/install/silent-mode/)
 
 Then follow these steps:
