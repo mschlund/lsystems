@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "lsystems"
+version = "0.2.0"
+description = "Playing around with lsystems and drawing the resulting string with the help of an svg-turtle as a curve."
+authors = ["Maximilian Schlund <3297755+mschlund@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "lsystems"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+jupyter = "^1.0.0"
+ipykernel = "^6.19.4"
+numpy = "^1.24.1"
+svgwrite = "^1.4.3"
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.991"
+autopep8 = "^2.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

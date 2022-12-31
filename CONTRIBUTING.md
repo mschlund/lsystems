@@ -6,4 +6,4 @@ As a general rule, consistency trumps most of the other non-functional requireme
 We (try to) follow the PEP8 conventions, i.e. snake_case for variables and functions and PascalCase for Classes.
 
 ## Testing
-Tests should be written in the Unittest-Framework and we encourage the use of TDD (in a reasonable, non-religios way, make sure you have watched the great talk https://www.youtube.com/watch?v=EZ05e7EMOLM).
+Tests should be written in the Unittest-Framework and we encourage the use of TDD (in a reasonable, non-religious way, make sure you have watched the great talk https://www.youtube.com/watch?v=EZ05e7EMOLM).
