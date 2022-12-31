@@ -49,8 +49,8 @@ class Curve(ABC):
 
 class Sierpinski(Curve):
 
-    def __init__(self, size=1000, width=3):
-        self.filename = 'sierpinski_curve.svg'
+    def __init__(self, size=1000, width=3, filename='sierpinski_curve.svg'):
+        self.filename = filename
         self.lsys = LSystem(
             'A -> B - A - B; B -> A + B + A;', start_symbol='A')  # sierpinski-curve
         self.postProcessMap = {'A': 'F', 'B': 'F', 'X': 'F'}
@@ -65,8 +65,8 @@ class Sierpinski(Curve):
 
 class Dragon(Curve):
 
-    def __init__(self, size=1000, width=3):
-        self.filename = 'dragon_curve.svg'
+    def __init__(self, size=1000, width=3, filename='dragon_curve.svg'):
+        self.filename = filename
         self.lsys = LSystem('F -> F + G; G -> F - G;', start_symbol='F')  # dragon-curve
         self.postProcessMap = {'F': 'F', 'G': 'F', 'X': 'F'}
         self.turtle = SimpleTurtle(90, 50, size, width=width)
