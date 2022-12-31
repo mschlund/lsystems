@@ -18,7 +18,7 @@ Prerequisites:
 or open the notebook in your favorite ide.
 
 
-### Deprecated (conda)
+### Conda (deprecated)
 Prerequisites:
 - install anaconda (see https://docs.anaconda.com/anaconda/install/silent-mode/)
 
