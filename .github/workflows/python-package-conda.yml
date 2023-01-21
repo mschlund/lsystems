@@ -5,7 +5,7 @@ name: CI-Conda
 on: [push, pull_request]
 
 jobs:
-  build-linux:
+  build:
     strategy:
       fail-fast: false
       matrix:
