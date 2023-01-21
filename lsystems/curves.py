@@ -148,6 +148,7 @@ class Hendragon2(Curve):
         self.filename = 'hendragon2_curve.svg'
 
         rules = \
+            "S -> rrrrRLR;" + \
             "M -> MRrLllr;" + \
             "r -> MrRMLlr;" + \
             "R -> MrrRlLr;" + \
@@ -156,7 +157,7 @@ class Hendragon2(Curve):
             "Lr-> rRLlllMrLlRrrl;" + \
             "LR-> rRLlllMMLRrrrl;"
 
-        self.lsys = LSystem(rules, start_symbol='rrrrRLR')
+        self.lsys = LSystem(rules, start_symbol='S')
         self.postProcessMap = {'F': 'F', '+': 'L', '-': 'R'}
         self.turtle = SimpleTurtle(
             60,

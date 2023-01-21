@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# png's and svg's of curves
+*.png
+*.svg
