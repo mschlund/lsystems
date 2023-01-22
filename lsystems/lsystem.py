@@ -35,8 +35,11 @@ class LSystem:
             i += 1
         return current_string
 
-    def run(self, number_of_iterations: int) -> str:
-        return self.run_from(initial_string=self.start_symbol, number_of_iterations=number_of_iterations)
+    def run(self, number_of_iterations: int, init_str=None) -> str:
+        if init_str:
+            return self.run_from(initial_string=init_str, number_of_iterations=number_of_iterations)
+        else:
+            return self.run_from(initial_string=self.start_symbol, number_of_iterations=number_of_iterations)
 
     def get_variables(self) -> set:
         return self.variables

@@ -35,12 +35,12 @@ class Curve(ABC):
         return sequence
 
     @abstractmethod
-    def run_curved_str(self, iters: int) -> str:
+    def run_curved_str(self, iters: int, init_str: str = "") -> str:
         return ''
 
     # returns an svg string
-    def run_curved(self, iters: int, writeOutput=False) -> str:
-        sequence = self.run_curved_str(iters)
+    def run_curved(self, iters: int, writeOutput=False, init_str="") -> str:
+        sequence = self.run_curved_str(iters, init_str=init_str)
         if self.postProcessMap is not None:
             sequence = _post_process(sequence, self.postProcessMap)
         filename = None if not writeOutput else self.filename
@@ -56,8 +56,8 @@ class Sierpinski(Curve):
         self.postProcessMap = {'A': 'F', 'B': 'F', 'X': 'F'}
         self.turtle = SimpleTurtle(60, 50, size, width=width)
 
-    def run_curved_str(self, iters) -> str:
-        raw_str = self.run_str(iters)
+    def run_curved_str(self, iters, init_str: str = "") -> str:
+        raw_str = self.run_str(iters, init_str=init_str)
         f_string = _post_process(raw_str, {'A': 'F', 'B': 'F'})
         split_string = _post_process(f_string, {'F': 'XX'})
         return _post_process(split_string, {'X+X': ')', 'X-X': '('})
@@ -71,8 +71,8 @@ class Dragon(Curve):
         self.postProcessMap = {'F': 'F', 'G': 'F', 'X': 'F'}
         self.turtle = SimpleTurtle(90, 50, size, width=width)
 
-    def run_curved_str(self, iters) -> str:
-        raw_str = self.run_str(iters)
+    def run_curved_str(self, iters, init_str: str = "") -> str:
+        raw_str = self.run_str(iters, init_str=init_str)
         f_string = _post_process(raw_str, {'G': 'F'})
         split_string = _post_process(f_string, {'F': 'XX'})
         return _post_process(split_string, {'X+X': ')', 'X-X': '('})
@@ -80,14 +80,14 @@ class Dragon(Curve):
 
 class Hilbert(Curve):
 
-    def __init__(self, size=1000, width=3):
-        self.filename = 'hilbert_curve.svg'
+    def __init__(self, size=1000, width=3, filename='hilbert_curve.svg'):
+        self.filename = filename
         self.lsys = LSystem('A -> +BF-AFA-FB+; B -> -AF+BFB+FA-;', start_symbol='A')  # hilbert-curve
         self.postProcessMap = {'A': '', 'B': ''}
         self.turtle = SimpleTurtle(90, 10, size, width=width)
 
-    def run_curved_str(self, iters) -> str:
-        raw_str = self.run_str(iters)
+    def run_curved_str(self, iters, init_str: str = "") -> str:
+        raw_str = self.run_str(iters, init_str=init_str)
         f_string = _post_process(raw_str, {'A': '', 'B': '', '+-': '', '-+': ''})
         split_string = _post_process(f_string, {'F': 'XX'})
         curved_string = _post_process(split_string, {'X+X': ')', 'X-X': '('})
@@ -97,16 +97,16 @@ class Hilbert(Curve):
 # Peano-curve with middle removed
 class FractalPeano(Curve):
 
-    def __init__(self, size=1000, width=3):
-        self.filename = 'fractal_peano_curve.svg'
+    def __init__(self, size=1000, width=3, filename='fractal_peano_curve.svg'):
+        self.filename = filename
         self.lsys = LSystem(
             'A -> AFBFA-F-BFCFB+F+AFBFA; B -> BFAFB+F+AFDFA-F-BFAFB; C -> CODOC-O-DOCOD+O+CODOC; D -> DOCOD+O+COCOC-O-DOCOD;',
             start_symbol='A')  # peano-curve
         self.postProcessMap = {'A': '', 'B': '', 'C': '', 'D': ''}
         self.turtle = SimpleTurtle(90, 10, size, width=width)
 
-    def run_curved_str(self, iters) -> str:
-        raw_str = self.run_str(iters)
+    def run_curved_str(self, iters, init_str: str = "") -> str:
+        raw_str = self.run_str(iters, init_str=init_str)
         f_string = _post_process(
             raw_str, {'A': '', 'B': '', 'C': '', 'D': '', '+-': '', '-+': ''})
         trimmed_string = _post_process(f_string, {'FO': 'OO', 'OF': 'OO'})
@@ -117,8 +117,8 @@ class FractalPeano(Curve):
 
 class Hendragon(Curve):
 
-    def __init__(self, size=1000, width=3):
-        self.filename = 'hendragon_curve.svg'
+    def __init__(self, size=1000, width=3, filename='hendragon_curve.svg'):
+        self.filename = filename
         rules = \
             "M -> lFrFRFMFLFlFr;" + \
             "l -> lFRFrFLFlFlFr;" + \
@@ -134,18 +134,18 @@ class Hendragon(Curve):
             width
         )
 
-    def run_str(self, iters: int) -> str:
-        curve_str = self.lsys.run(iters)
+    def run_str(self, iters: int, init_str: str = "") -> str:
+        curve_str = self.lsys.run(iters, init_str=init_str)
         return _post_process(curve_str, {'L': 'll', 'R': 'rr'})
 
-    def run_curved_str(self, iters) -> str:
-        return self.run_str(iters)
+    def run_curved_str(self, iters, init_str: str = "") -> str:
+        return self.run_str(iters, init_str=init_str)
 
 
 class Hendragon2(Curve):
 
-    def __init__(self, size=1000, width=3):
-        self.filename = 'hendragon2_curve.svg'
+    def __init__(self, size=1000, width=3, filename='hendragon2_curve.svg'):
+        self.filename = filename
 
         rules = \
             "S -> rrrrRLR;" + \
@@ -158,7 +158,7 @@ class Hendragon2(Curve):
             "LR-> rRLlllMMLRrrrl;"
 
         self.lsys = LSystem(rules, start_symbol='S')
-        self.postProcessMap = {'F': 'F', '+': 'L', '-': 'R'}
+        self.postProcessMap = {'F': 'F', '+': 'L', '-': 'R', 'M': ''}
         self.turtle = SimpleTurtle(
             60,
             5,
@@ -166,8 +166,8 @@ class Hendragon2(Curve):
             width
         )
 
-    def run_str(self, iters: int) -> str:
-        curve_str = self.lsys.run(iters)
+    def run_str(self, iters: int, init_str: str = "") -> str:
+        curve_str = self.lsys.run(iters, init_str=init_str)
         post_str = _post_process(curve_str, {
             'M': 'FF',
             'r': 'F-F',
@@ -177,8 +177,8 @@ class Hendragon2(Curve):
         })
         return post_str[1:-1]+'FF'
 
-    def run_curved_str(self, iters) -> str:
-        return self.run_str(iters)
+    def run_curved_str(self, iters, init_str: str = "") -> str:
+        return self.run_str(iters, init_str=init_str)
 
 
 def _post_process(curve_string: str, replacements: dict) -> str:
