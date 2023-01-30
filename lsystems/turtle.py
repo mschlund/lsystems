@@ -2,7 +2,7 @@ import svgwrite
 from .svg import PathSegment, Line, Rotation, Arc, PushPosition, PopPosition
 
 
-class Turtle:
+class SVGTurtle:
     def __init__(self, movement_map, width=600, height=400, stroke=3, start_direction=0) -> None:
         self.movement_map = movement_map
         self.stroke = stroke
@@ -60,7 +60,7 @@ class Turtle:
         return svg.tostring()
 
 
-class SimpleTurtle(Turtle):
+class SimpleTurtle(SVGTurtle):
     def __init__(self, angle, stride, size, width=3):
         stack = []
         movement_map = {
