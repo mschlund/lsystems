@@ -14,7 +14,7 @@ class PathSegment:
     def __init__(self,
                  start_position: tuple[float, float],
                  start_direction: float,
-                 end_position: float,
+                 end_position: tuple[float, float],
                  end_direction: float,
                  d: str
                  ):
@@ -104,3 +104,23 @@ class Arc(Movement):
             end_direction=dir+self.angle,
             d=d
         )
+
+
+class PushPosition(Movement):
+    """["""
+
+    def __init__(self, stack):
+        self.stack = stack
+
+    def generate(self, previous_segment):
+        pass
+
+
+class PopPosition(Movement):
+    """]"""
+
+    def __init__(self, stack):
+        self.stack = stack
+
+    def generate(self, previous_segment):
+        pass

@@ -1,5 +1,5 @@
 import svgwrite
-from .svg import PathSegment, Line, Rotation, Arc
+from .svg import PathSegment, Line, Rotation, Arc, PushPosition, PopPosition
 
 
 class Turtle:
@@ -62,6 +62,7 @@ class Turtle:
 
 class SimpleTurtle(Turtle):
     def __init__(self, angle, stride, size, width=3):
+        stack = []
         movement_map = {
             "O": Line(length=stride, draw=False),
             "F": Line(length=stride),
@@ -70,6 +71,9 @@ class SimpleTurtle(Turtle):
             "L": Rotation(angle=angle),
             "R": Rotation(angle=-angle),
             ")": Arc(angle=angle, rx=stride, ry=stride),
-            "(": Arc(angle=-angle, rx=stride, ry=stride)
+            "(": Arc(angle=-angle, rx=stride, ry=stride),
+            "[": PushPosition(stack=stack),
+            "]": PopPosition(stack=stack)
+            # TODO: we can extend this to other brackets like "{" with giving PushPosition an argument
         }
         super().__init__(movement_map, width=size, height=size, stroke=width)
