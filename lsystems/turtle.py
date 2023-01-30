@@ -1,5 +1,5 @@
 import svgwrite
-from .svg import PathSegment, Line, Rotation, Arc, PushPosition, PopPosition
+from .svg import Cursor, Line, Rotation, Arc, PushPosition, PopPosition
 
 
 class SVGTurtle:
@@ -19,13 +19,7 @@ class SVGTurtle:
         xmax = 0
         ymin = 0
         ymax = 0
-        segment = PathSegment(
-            start_position=(0, 0),
-            start_direction=self.start_direction,
-            end_position=(0, 0),
-            end_direction=self.start_direction,
-            d="M 0 0"
-        )
+        cursor = Cursor(x=0, y=0, dir=self.start_direction)
         path.push("M 0 0")
 
         for char in sequence:
@@ -33,12 +27,12 @@ class SVGTurtle:
                 raise Exception(f"{char} not defined in movement map")
 
             movement = self.movement_map[char]
-            segment = movement.generate(previous_segment=segment)
-            path.push(segment.d)
-            xmin = min(xmin, segment.end_position[0])
-            xmax = max(xmax, segment.end_position[0])
-            ymin = min(ymin, segment.end_position[1])
-            ymax = max(ymax, segment.end_position[1])
+            segment, cursor = movement.generate(start_cursor=cursor)
+            path.push(segment)
+            xmin = min(xmin, cursor.x)
+            xmax = max(xmax, cursor.x)
+            ymin = min(ymin, cursor.y)
+            ymax = max(ymax, cursor.y)
 
         # add some margin around the path
         viewboxWidth = xmax-xmin+self.width*0.2
