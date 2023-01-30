@@ -109,18 +109,40 @@ class Arc(Movement):
 class PushPosition(Movement):
     """["""
 
-    def __init__(self, stack):
+    def __init__(self, stack: list):
         self.stack = stack
 
     def generate(self, previous_segment):
-        pass
+        pos = previous_segment.end_position
+        dir = previous_segment.end_direction
+        self.stack.append((pos, dir))
+        
+        return PathSegment(
+            start_position=pos,
+            start_direction=dir,
+            end_position=pos,
+            end_direction=dir,
+            d=""
+        )
 
 
 class PopPosition(Movement):
     """]"""
 
-    def __init__(self, stack):
+    def __init__(self, stack: list):
         self.stack = stack
 
     def generate(self, previous_segment):
-        pass
+        if len(self.stack) == 0:
+            raise Exception("PopPosition without corresponding PushPosition found")
+
+        pos, dir = self.stack.pop()
+        d = f"M {pos[0]:0.4f} {pos[1]:0.4f}"
+
+        return PathSegment(
+            start_position=previous_segment.end_position,
+            start_direction=previous_segment.end_direction,
+            end_position=pos,
+            end_direction=dir,
+            d=d
+        )

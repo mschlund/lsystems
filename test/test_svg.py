@@ -13,9 +13,7 @@ previous_segment = PathSegment(
 class TestSvg(unittest.TestCase):
     def test_line(self):
         line = Line(length=20)
-        previous_state = {}
-        segment, state = line.generate(previous_segment, previous_state)
-        self.assertDictEqual(state, {})
+        segment = line.generate(previous_segment)
 
         self.assertEqual(segment.start_position, previous_segment.end_position)
         self.assertEqual(segment.start_direction, previous_segment.end_direction)
@@ -26,10 +24,8 @@ class TestSvg(unittest.TestCase):
 
     def test_line_without_draw(self):
         line = Line(length=20, draw=False)
-        previous_state = {}
-        segment, state = line.generate(previous_segment, previous_state)
-        self.assertDictEqual(state, {})
-
+        segment = line.generate(previous_segment)
+        
         self.assertEqual(segment.start_position, previous_segment.end_position)
         self.assertEqual(segment.start_direction, previous_segment.end_direction)
         self.assertAlmostEqual(segment.end_position[0], 10)
@@ -39,10 +35,8 @@ class TestSvg(unittest.TestCase):
 
     def test_rotation(self):
         line = Rotation(angle=122)
-        previous_state = {}
-        segment, state = line.generate(previous_segment, previous_state)
-        self.assertDictEqual(state, {})
-
+        segment = line.generate(previous_segment)
+        
         self.assertEqual(segment.start_position, previous_segment.end_position)
         self.assertEqual(segment.start_direction, previous_segment.end_direction)
         self.assertEqual(segment.end_position, previous_segment.end_position)
@@ -50,11 +44,11 @@ class TestSvg(unittest.TestCase):
         self.assertEqual(segment.d, "")
 
     def test_push_pop_position(self):
-        previous_state = {}
+        stack = []
+        push = PushPosition(stack=stack)
+        segment = push.generate(previous_segment)
 
-        push = PushPosition()
-        segment, state = push.generate(previous_segment, previous_state)
-
+        self.assertEqual(len(stack), 1)
         self.assertEqual(segment.start_position, previous_segment.end_position)
         self.assertEqual(segment.start_direction, previous_segment.end_direction)
         self.assertEqual(segment.end_position, previous_segment.end_position)
@@ -69,14 +63,15 @@ class TestSvg(unittest.TestCase):
             d=""
         )
 
-        pop = PopPosition()
-        popped_segment, _ = pop.generate(input_segment_to_pop, state)
-
+        pop = PopPosition(stack=stack)
+        popped_segment = pop.generate(input_segment_to_pop)
+        
+        self.assertEqual(len(stack), 0)
         self.assertEqual(popped_segment.start_position, input_segment_to_pop.end_position)
         self.assertEqual(popped_segment.start_direction, input_segment_to_pop.end_direction)
         self.assertEqual(popped_segment.end_position, segment.end_position)
         self.assertEqual(popped_segment.end_direction, segment.end_direction)
-        self.assertEqual(popped_segment.d, f"M {previous_segment.end_position[0]} {previous_segment.end_position[1]}")
+        self.assertEqual(popped_segment.d, "M 10.0000 10.0000")
 
 
 if __name__ == '__main__':
