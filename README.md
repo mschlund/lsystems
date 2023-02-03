@@ -2,7 +2,7 @@
 
 # lsystems
 Playing around with lsystems and drawing the resulting string with the help of an svg-turtle as a curve.
-
+See the corresponding blog-post https://maximilianschlund.wordpress.com/2023/01/06/drawing-curves-with-l-systems/
 ## Build
 Prerequisites:
 - install poetry (cf. https://python-poetry.org/docs/)
