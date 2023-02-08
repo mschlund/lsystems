@@ -180,6 +180,28 @@ class Hendragon2(Curve):
     def run_curved_str(self, iters, init_str: str = "") -> str:
         return self.run_str(iters, init_str=init_str)
 
+class FractalPlant(Curve):
+
+    def __init__(self, size=1000, width=3, filename='fractalplant_curve.svg'):
+        self.filename = filename
+
+        rules = \
+            "X -> F+[[X]-X]-F[-FX]+X;" + \
+            "F -> FF;"
+
+        self.lsys = LSystem(rules, start_symbol='X')
+        self.postProcessMap = {'F': 'F', '+': 'L', '-': 'R', 'X': ''}
+        self.turtle = SimpleTurtle(
+            25,
+            5,
+            size,
+            width,
+            start_direction=90
+        )
+
+    def run_curved_str(self, iters, init_str: str = "") -> str:
+        return self.run_str(iters, init_str=init_str)
+
 
 def _post_process(curve_string: str, replacements: dict) -> str:
     pattern = re.compile('|'.join([re.escape(x) for x in replacements.keys()]))

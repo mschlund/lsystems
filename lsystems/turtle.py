@@ -55,7 +55,7 @@ class SVGTurtle:
 
 
 class SimpleTurtle(SVGTurtle):
-    def __init__(self, angle, stride, size, width=3):
+    def __init__(self, angle, stride, size, width=3, start_direction=0):
         stack = []
         movement_map = {
             "O": Line(length=stride, draw=False),
@@ -68,6 +68,5 @@ class SimpleTurtle(SVGTurtle):
             "(": Arc(angle=-angle, rx=stride, ry=stride),
             "[": PushPosition(stack=stack),
             "]": PopPosition(stack=stack)
-            # TODO: we can extend this to other brackets like "{" with giving PushPosition an argument
         }
-        super().__init__(movement_map, width=size, height=size, stroke=width)
+        super().__init__(movement_map, width=size, height=size, stroke=width, start_direction=start_direction)

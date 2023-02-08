@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from math import sin, cos, radians, tan, atan, pi
+from math import sin, cos, radians, tan, atan, pi, isclose
 
 
 class Cursor:
@@ -13,9 +13,9 @@ class Cursor:
         self.dir = dir
 
     def __eq__(self, other):
-        return abs(self.x - other.x) < 1e-10 and \
-            abs(self.y - other.y) < 1e-10 and \
-            abs(self.dir - other.dir) < 1e-10
+        return isclose(self.x, other.x) and \
+            isclose(self.y, other.y) and \
+            isclose(self.dir, other.dir)
 
     def __str__(self):
         return f"Cursor(x={self.x:0.4f}, y={self.y:0.4f}, dir={self.dir:0.4f})"
