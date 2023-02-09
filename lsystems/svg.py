@@ -1,33 +1,29 @@
 from abc import ABC, abstractmethod
-from math import sin, cos, radians, tan, atan, pi
+from math import sin, cos, radians, tan, atan, pi, isclose
 
 
-class PathSegment:
-    """
-    represents a segment of a svg path
-    the start position and start direction (in degree) can be seen as assumptions,
-    which should be met by the previous segment to assure the end position and
-    end direction. The d contains the path segment as string representation as
-    it is required by the svg path tag. The coordinates in d should be absolute.
-    """
+class Cursor:
+    x: float
+    y: float
+    dir: float
 
-    def __init__(self,
-                 start_position: tuple[float, float],
-                 start_direction: float,
-                 end_position: float,
-                 end_direction: float,
-                 d: str
-                 ):
-        self.start_position = start_position
-        self.start_direction = start_direction
-        self.end_position = end_position
-        self.end_direction = end_direction
-        self.d = d
+    def __init__(self, x: float, y: float, dir: float):
+        self.x = x
+        self.y = y
+        self.dir = dir
+
+    def __eq__(self, other):
+        return isclose(self.x, other.x) and \
+            isclose(self.y, other.y) and \
+            isclose(self.dir, other.dir)
+
+    def __str__(self):
+        return f"Cursor(x={self.x:0.4f}, y={self.y:0.4f}, dir={self.dir:0.4f})"
 
 
 class Movement(ABC):
     @abstractmethod
-    def generate(self, previous_segment: PathSegment) -> PathSegment:
+    def generate(self, previous_cursor: Cursor) -> tuple[str, Cursor]:
         pass
 
 
@@ -36,21 +32,15 @@ class Line(Movement):
         self.length = length
         self.draw = draw
 
-    def generate(self, previous_segment):
-        x, y = previous_segment.end_position
-        dir = previous_segment.end_direction
-        rad = radians(dir)
-        x_end = x + self.length*cos(rad)
-        y_end = y + self.length*sin(rad)
+    def generate(self, start_cursor):
+        rad = radians(start_cursor.dir)
+        x_end = start_cursor.x + self.length*cos(rad)
+        y_end = start_cursor.y + self.length*sin(rad)
         cmd = "L" if self.draw else "M"
         d = f"{cmd} {x_end:0.4f} {y_end:0.4f}"
-        return PathSegment(
-            start_position=(x, y),
-            start_direction=dir,
-            end_position=(x_end, y_end),
-            end_direction=dir,
-            d=d
-        )
+
+        end_cursor = Cursor(x_end, y_end, start_cursor.dir)
+        return (d, end_cursor)
 
 
 class Rotation(Movement):
@@ -58,16 +48,15 @@ class Rotation(Movement):
         # negative because in svg the y axis goes down, not up
         self.angle = -angle
 
-    def generate(self, previous_segment):
-        pos = previous_segment.end_position
-        dir = previous_segment.end_direction
-        return PathSegment(
-            start_position=pos,
-            start_direction=dir,
-            end_position=pos,
-            end_direction=dir+self.angle,
-            d=""
+    def generate(self, start_cursor):
+        d = ""
+        end_cursor = Cursor(
+            x=start_cursor.x,
+            y=start_cursor.y,
+            dir=start_cursor.dir+self.angle
         )
+
+        return d, end_cursor
 
 
 class Arc(Movement):
@@ -80,9 +69,10 @@ class Arc(Movement):
             raise Exception(
                 f"{angle} needs in interval [-360, 360], but not 0")
 
-    def generate(self, previous_segment):
-        x, y = previous_segment.end_position
-        dir = previous_segment.end_direction
+    def generate(self, start_cursor):
+        x = start_cursor.x
+        y = start_cursor.y
+        dir = start_cursor.dir
         rad_dir = radians(dir)
         rad_angle = atan(tan(radians(self.angle))*self.rx/self.ry) % (2*pi)
         if abs(self.angle) > 90 and abs(self.angle) < 270:
@@ -97,10 +87,33 @@ class Arc(Movement):
         large_arc = 1 if abs(self.angle) > 180 else 0
         sweep = 1 if self.angle > 0 else 0
         d = f"A {self.rx:0.4f} {self.ry:0.4f} {dir} {large_arc} {sweep} {x_end:0.4f} {y_end:0.4f}"
-        return PathSegment(
-            start_position=(x, y),
-            start_direction=dir,
-            end_position=(x_end, y_end),
-            end_direction=dir+self.angle,
-            d=d
-        )
+        end_cursor = Cursor(x=x_end, y=y_end, dir=dir+self.angle)
+        return d, end_cursor
+
+
+class PushPosition(Movement):
+    """["""
+
+    def __init__(self, stack: list):
+        self.stack = stack
+
+    def generate(self, start_cursor):
+        self.stack.append(start_cursor)
+
+        return "", start_cursor
+
+
+class PopPosition(Movement):
+    """]"""
+
+    def __init__(self, stack: list):
+        self.stack = stack
+
+    def generate(self, start_cursor):
+        if len(self.stack) == 0:
+            raise Exception("PopPosition without corresponding PushPosition found")
+
+        saved_cursor = self.stack.pop()
+        d = f"M {saved_cursor.x:0.4f} {saved_cursor.y:0.4f}"
+
+        return d, saved_cursor
